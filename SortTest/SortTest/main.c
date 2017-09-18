@@ -7,6 +7,7 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void printfSort(int a[], int n) {
     
@@ -158,6 +159,56 @@ void quickSort(int a[], int left, int right)
     quickSort(a, i + 1, right);
 }
 
+
+
+// 归并排序：时间复杂度 -- O(nlogn)
+/*
+归并排序（MERGE-SORT）是建立在归并操作上的一种有效的排序算法,该算法是采用分治法（Divide and Conquer）的一个非常典型的应用。将已有序的子序列合并，得到完全有序的序列；即先使每个子序列有序，再使子序列段间有序。若将两个有序表合并成一个有序表，称为二路归并。
+ */
+
+void merge(int a[], int low, int mid, int high);
+
+void mergeSort(int a[], int low, int high) {
+    
+    if (low < high) {
+        
+        int mid = (low + high) / 2;
+        
+        mergeSort(a, low, mid);
+        mergeSort(a, mid + 1, high);
+        merge(a, low, mid, high);
+    }
+}
+
+void merge(int a[], int low, int mid, int high) {
+    
+    int start1 = low, end1 = mid, start2 = mid + 1, end2 = high;
+    int *temp = (int *)malloc((high - low + 1) * sizeof(int)); // 开辟对应大小的内存空间
+    
+    int k;
+    // 两部分相互比较，按照升序将数据暂存入temp
+    for (k = 0; start1 <= end1 && start2 <= end2; k++) {
+        
+        if (a[start1] < a[start2]) {
+            temp[k] = a[start1++];
+        } else {
+            temp[k] = a[start2++];
+        }
+    }
+    
+    // 检测是否有剩余项，直接拷贝到temp
+    while (start1 <= end1) temp[k++] = a[start1++];
+    while (start2 <= end2) temp[k++] = a[start2++];
+    
+    // 将temp拷贝到原数组地址范围内
+    for (int i = 0; i < high - low + 1; i++) {
+        
+        a[low + i] = temp[i];
+    }
+    
+    free(temp);
+}
+
 int main(int argc, const char * argv[]) {
     
     int a[10] = {2,3,1,6,9,1,4,8,5,7};
@@ -168,7 +219,8 @@ int main(int argc, const char * argv[]) {
 //    insertSort(a, 10);
 //    binaryInsertSort(a, 10);
 //    selectSort(a, 10);
-    quickSort(a, 0, 9);
+//    quickSort(a, 0, 9);
+    mergeSort(a, 0, 9);
     printfSort(a, 10);
     return 0;
 }
