@@ -135,33 +135,25 @@ void selectSort(int a[], int n) {
 
 void quickSort(int a[], int left, int right)
 {
-    int i, j, key;
+    if (left >= right) return;
     
-    if(left > right)
-        return;
+    int i = left, j = right, k = a[left];
     
-    key = a[left];
-    i = left;
-    j = right;
-    
-    while(i != j)
+    // 当 i = j 时说明已经找到 k 的位置，停止查找
+    while (i < j)
     {
-        // 右边的从右到左查找比key小的数，大于key则继续往左走
-        while(a[j] >= key && i < j)  j--;
-        // 左边的从左到右查找比key大的数，小于key则继续往右走
-        while(a[i] <= key && i < j)  i++;
+        while(i < j && a[j] >= k) j--; // 从右向左找小于k的数
+
+        if(i < j) a[i++] = a[j]; // 如果 i < j说明 j 已查到，则将其填入 a[i]( a[i] 已被暂存：k = a[left] 或者a[j--] = a[i])，i 后移
         
-        // 表示已经查到，则交换左右俩数
-        if(i < j)
-        {
-            a[i] = a[i]^a[j];
-            a[j] = a[i]^a[j];
-            a[i] = a[i]^a[j];
-        }
+        while(i < j && a[i] <= k) i++; // 从左向右找大于k的数
+            
+        if(i < j) a[j--] = a[i]; // 如果 i < j说明 i 已查到，则将其填入 a[j]( a[j] 已被暂存：a[i++] = a[j])，j 前移
     }
     
-    a[left] = a[i];
-    a[i] = key;
+    // 结束循环时 i = j 已经确定 k 的位置，将 k 填入。
+    a[i] = k;
+    // 递归调用
     quickSort(a, left, i - 1);
     quickSort(a, i + 1, right);
 }
@@ -169,7 +161,7 @@ void quickSort(int a[], int left, int right)
 int main(int argc, const char * argv[]) {
     
     int a[10] = {2,3,1,6,9,1,4,8,5,7};
-    //    int a[10] = {2,2,2,2,2,1,1,1,1,1};
+//    int a[10] = {2,2,2,2,2,1,1,1,1,1};
     
     printfSort(a, 10);
 //    bubbleSort(a, 10);
